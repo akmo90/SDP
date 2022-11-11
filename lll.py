@@ -1,30 +1,5 @@
 import random
-#factory 
-def createhero():
-    print("Create your hero!")
-    selection = input("Write your name: ")
-    health = input("Write your health:")
-    strength = input("Write your strength:")
-    defence = input("Write your defence:")
-    magic = input("Write your magic:")
-    
-    print(selection, "start adventure text game")
-    print("\n",selection,"health - ", health,"\n", selection,"strength - ",strength,"\n",selection,"defence",defence,"\n",selection,"magic - ",magic) 
-
-def vybor():
-    print ("Select your hero!")
-    selection = input("1. Create your hero \n2. Select your hero")
-    if selection == "1":
-       createhero()
-    elif selection == "2":
-        heroselect()
-    else:
-        print("Only press 1, 2 ")
-        heroselect()
-
-
-    
-#Hero Classes
+#hero
 class warrior (object):
     health = 50
     strength = 10
@@ -42,28 +17,26 @@ class elf (object):
     strength = 5
     defence = 10
     magic = 7
-
-# Enemy Classes
-
+#enemy
 class goblin (object):
     name = "Goblin"
-    health = 25
-    strength = 4
+    health = 20
+    strength = 2
     defence = 2
     loot = random.randint(0,2)
 
-class slime (object):
-    name = "Slime"
-    health = 15
+class bat (object):
+    name = "Bat"
+    health = 10
     strength = 1
     defence = 3
     loot = random.randint(0,2)
 
-class snake (object):
-    name = "Snake"
-    health = 40
+class troll (object):
+    name = "Troll"
+    health = 30
     strength = 5
-    defence = 4
+    defence = 1.5
     loot = random.randint(0,2)
 
 class boss(object):
@@ -71,7 +44,7 @@ class boss(object):
     health = 150
     strength = 50
     defence = 50
-#Observer
+
 def gameOver(character, score):
     if character.health < 1:
         print("You have no health left")
@@ -99,10 +72,63 @@ def writeScore(score):
     file.write("\n")
     file.close()
 
-#Strategy
+def enemyselect(goblin,bat,troll):
+    enemyList = [goblin,bat,troll]
+    chance = random.randint(0,2)
+    enemy = enemyList[chance]
+    return enemy
+
+def loot():
+    loot = ["potion", "sword", "shield"]
+    lootChance = random.randint(0,2)
+    lootDrop = loot[lootChance]
+    return lootDrop
+
+def lootEffect(lootDrop, character):
+    if lootDrop == "potion":
+        character.health = character.health + 20
+        print ("you drink the potion, increasing your health by 20!")
+        print ("Your health is now", character.health)
+        return character
+
+    elif lootDrop == "sword":
+        character.strength = character.strength + 2
+        print ("you swap your sword for the newer, much sharper one!")
+        print ("Your strength has been increased by 2")
+        print ("your new strength is now", character.strength)
+        return character
+
+    elif lootDrop == "shield":
+        character.defence = character.defence + 2
+        print ("you swap your shield for the newer, much stronger one!")
+        print ("Your defence has been increased by 2")
+        print ("your new strength is now", character.defence)
+        return character
+
+    elif lootDrop == "poison":
+        character.health = character.health - 15
+        print("you drink the poison, decreasing your health by 15!")
+        print("Your health is now", character.health)
+
+    elif lootDrop == "slime":
+        character.strength = character.strength - 1
+        print("you find slime, decreasing your strength by 1!")
+        print("Your strength is now", character.health)
+#factory 
+def creathero():
+    print("Create your hero!")
+    selection = input("Write your name: ")
+    health = input("Write your health:")
+    strength = input("Write your strength:")
+    defence = input("Write your defence:")
+    magic = input("Write your magic:")
+    
+    print(selection, "start adventure text game")
+    print("\n",selection,"health - ", health,"\n", selection,"strength - ",strength,"\n",selection,"defence",defence,"\n",selection,"magic - ",magic) 
+
 def heroselect():
     print ("Select your hero!")
-    selection = input("1. Warrior \n2. Wizard \n3. Elf \n")
+    selection = input("1. Warrior \n2. Wizard \n3. Elf \n4. Your character \n")
     if selection == "1":
         character = warrior
         print ("You have selected the warrior...These are their stats...")
@@ -129,59 +155,18 @@ def heroselect():
         print ("Defence - ", character.defence)
         print ("Magic - ", character.magic)
         return character
-
+    elif selection == "4":
+        character = creathero
+        return creathero()
     else:
-        print("Only press 1, 2 or 3")
-        heroselect()
+        print("Only press 1, 2, 3 or 4")
 
-def enemyselect(goblin,bat,troll):
-    enemyList = [goblin,bat,troll]
-    chance = random.randint(0,2)
-    enemy = enemyList[chance]
-    return enemy
-
-def loot():
-    loot = ["potion", "sword", "shield"]
-    lootChance = random.randint(0,2)
-    lootDrop = loot[lootChance]
-    return lootDrop
-
-def lootEffect(lootDrop, character):
-    if lootDrop == "potion":
-        character.health = character.health + 20
-        print ("you drink the potion, increasing your health by 20!")
-        print ("Your health is now", character.health)
-        return character
-
-    elif lootDrop == "sword":
-        character.strength = character.strength + 3
-        print ("you swap your sword for the newer, much sharper one!")
-        print ("Your strength has been increased by 3")
-        print ("your new strength is now", character.strength)
-        return character
-
-    elif lootDrop == "shield":
-        character.defence = character.defence + 5
-        print ("you swap your shield for the newer, much stronger one!")
-        print ("Your defence has been increased by 5")
-        print ("your new strength is now", character.defence)
-        return character
-
-    elif lootDrop == "poison":
-        character.defence = character.health - 10
-        print ("You just tasted the poison now your health will get worse!")
-        print ("Your defence has been deacreased by 3")
-        print ("your health is now", character.defence)
-        return character
-
-    
-    
 def battlestate(score):
-    enemy = enemyselect(goblin,snake,slime)
-    print( enemy.name, "has appeared!")
+    enemy = enemyselect(goblin,bat,troll)
+    print("a wild", enemy.name, "has appeared!")
     print ("you have 3 options...")
     while enemy.health > 0 :
-        choice = input("1. Sword\n2. Magic \n3. RUN!\n")
+        choice = input("1. Sword\n2. Magic \n3. RUN!")
 
         if choice == "1":
             print ("You swing your sword, attacking the", enemy.name)
@@ -202,12 +187,12 @@ def battlestate(score):
                         score = score + 10
                         
 
-                    elif enemy.name == "Snake":
+                    elif enemy.name == "Bat":
                         enemy.health = 10
                         score = score + 5
                         
 
-                    elif enemy.name == "Slime":
+                    elif enemy.name == "Troll":
                         enemy.health = 30
                         score = score + 15
                         
@@ -245,12 +230,12 @@ def battlestate(score):
                         score = score + 10
                         
 
-                    elif enemy.name == "Snake":
+                    elif enemy.name == "Bat":
                         enemy.health = 10
                         score = score + 5
                         
 
-                    elif enemy.name == "Slime":
+                    elif enemy.name == "Troll":
                         enemy.health = 30
                         score = score + 15
                         
@@ -285,14 +270,11 @@ def battlestate(score):
 
         else:
             print ("number not allowed, please only type 1, 2 or 3...")
-        
 
 def BossBattleState(score):
     enemy = boss
-    
+        
 
-
-vybor()
 score = 0
 character = heroselect()
 score = battlestate(score)
